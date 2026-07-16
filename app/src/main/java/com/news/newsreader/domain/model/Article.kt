@@ -1,6 +1,7 @@
 package com.news.newsreader.domain.model
 
 data class Article(
+    val id: Int = 0,
     val sourceName: String?,
     val author: String?,
     val title: String?,

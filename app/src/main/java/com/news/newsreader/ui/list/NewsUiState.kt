@@ -1,4 +1,4 @@
-package com.news.newsreader.ui
+package com.news.newsreader.ui.list
 
 import com.news.newsreader.domain.model.Article
 

@@ -1,50 +1,48 @@
 package com.news.newsreader.data.repository
 
+import android.util.Log
+import com.news.newsreader.data.local.ArticleDao
+import com.news.newsreader.data.local.toArticleDomain
+import com.news.newsreader.data.local.toDomainList
+import com.news.newsreader.data.model.toEntityList
 import com.news.newsreader.data.remote.NewsApiService
-import com.news.newsreader.data.remote.dto.ArticleDto
+import com.news.newsreader.domain.NewsRepo
 import com.news.newsreader.domain.model.Article
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class NewsRepoImpl @Inject constructor(
-    private val newsService: NewsApiService
+    private val newsService: NewsApiService,
+    private val articleDao: ArticleDao
 ) : NewsRepo {
 
-    private fun mapResponse(dto: ArticleDto): Article {
-        return Article(
-            sourceName = dto.source?.name,
-            author = dto.author,
-            title = dto.title,
-            description = dto.description,
-            url = dto.url,
-            imageUrl = dto.urlToImage,
-            publishedAt = dto.publishedAt,
-            content = dto.content
-        )
-    }
-
-    override suspend fun getTopHeadlines(country: String): Result<List<Article>> {
-        return try {
-            val response = newsService.getTopHeadlines(country = country)
-            Result.success(response.articles.map { mapResponse(it) })
-        } catch (t: Throwable) {
-            Result.failure(t)
+    override suspend fun getTopHeadlines(): Flow<List<Article>> {
+        return articleDao.getAllArticles().map { entities ->
+            entities.toDomainList()
         }
     }
 
-    override suspend fun getEverything(
-        query: String,
-        from: String?,
-        to: String?
-    ): Result<List<Article>> {
-        return try {
-            val response = newsService.getEverything(
-                query = query,
-                fromDate = from,
-                toDate = to
-            )
-            Result.success(response.articles.map { mapResponse(it) })
-        } catch (t: Throwable) {
-            Result.failure(t)
+    override suspend fun refreshTopHeadlines() {
+        try {
+            val response = newsService.getTopHeadlines()
+            val entities = response.toEntityList()
+            articleDao.insertAll(entities)
+        } catch (e: Exception) {
+            Log.e("Error","Error: $e")
+        }
+    }
+
+    /* TODO: Implement this method properly */
+    override suspend fun getEverything(): Flow<List<Article>> {
+        return articleDao.getAllArticles().map { entities ->
+            entities.toDomainList()
+        }
+    }
+
+    override fun getArticleById(id: Int): Flow<Article> {
+        return articleDao.getArticleById(id).map { entity ->
+            entity.toArticleDomain()
         }
     }
 }

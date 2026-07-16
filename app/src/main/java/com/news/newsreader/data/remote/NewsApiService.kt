@@ -1,6 +1,6 @@
 package com.news.newsreader.data.remote
 
-import com.news.newsreader.data.remote.dto.NewsResponseDto
+import com.news.newsreader.data.model.NewsResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 

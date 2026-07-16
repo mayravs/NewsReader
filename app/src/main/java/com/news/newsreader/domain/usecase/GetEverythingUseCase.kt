@@ -1,18 +1,14 @@
 package com.news.newsreader.domain.usecase
 
-import com.news.newsreader.data.repository.NewsRepo
+import com.news.newsreader.domain.NewsRepo
+import com.news.newsreader.domain.model.Article
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetEverythingUseCase @Inject constructor(
     private val newsRepo: NewsRepo
 ) {
-    suspend operator fun invoke(
-        query: String,
-        fromDate: String?,
-        toDate: String?
-    ) = newsRepo.getEverything(
-        query = query,
-        from = fromDate,
-        to = toDate
-    )
+    suspend operator fun invoke(): Flow<List<Article>> {
+        return newsRepo.getEverything()
+    }
 }

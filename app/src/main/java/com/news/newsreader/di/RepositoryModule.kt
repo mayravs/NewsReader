@@ -1,18 +1,18 @@
 package com.news.newsreader.di
 
-import com.news.newsreader.data.repository.NewsRepo
+import com.news.newsreader.domain.NewsRepo
 import com.news.newsreader.data.repository.NewsRepoImpl
-import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module
 @InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
+@Module
+object RepositoryModule {
 
-    @Binds
+    @Provides
     @Singleton
-    abstract fun bindNewsRepository(impl: NewsRepoImpl): NewsRepo
+    fun providesNewsRepo(impl: NewsRepoImpl): NewsRepo = impl
 }

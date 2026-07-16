@@ -3,8 +3,8 @@ package com.news.newsreader
 import com.news.newsreader.domain.model.Article
 import com.news.newsreader.domain.usecase.GetEverythingUseCase
 import com.news.newsreader.domain.usecase.GetTopHeadlinesUseCase
-import com.news.newsreader.ui.NewsUiState
-import com.news.newsreader.ui.NewsViewModel
+import com.news.newsreader.ui.list.NewsUiState
+import com.news.newsreader.ui.list.NewsViewModel
 import com.news.newsreader.utils.MainDispatcherRule
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
@@ -37,6 +37,7 @@ class NewsViewModelTest {
     fun `fetchTopHeadlines updates state to Success when repo returns data`() = runTest {
         // Arrange
         val testArticles = listOf(Article(
+            id = 1,
             sourceName = "Gizmodo.com",
             author = "Mike Pearl",
             title = "Bitcoin Mining is Being Used to Offset Heating Costs in Greenhouses and Homes",

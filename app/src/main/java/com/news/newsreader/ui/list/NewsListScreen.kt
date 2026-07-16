@@ -1,4 +1,4 @@
-package com.news.newsreader.ui
+package com.news.newsreader.ui.list
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -37,9 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.news.newsreader.DateTimeUtils
 import com.news.newsreader.R
 import com.news.newsreader.domain.model.Article
+import com.news.newsreader.ui.DateTimeUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -100,7 +100,7 @@ fun NewsListScreen(
                     Text(text = "Error: $msg")
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
-                        onClick = { viewModel.fetchTopHeadlines() }
+                        onClick = { viewModel.refreshTopHeadlines() }
                     ) {
                         Text(text = "Retry")
                     }

@@ -1,4 +1,4 @@
-package com.news.newsreader.ui
+package com.news.newsreader.ui.details
 
 import android.content.Intent
 import android.webkit.WebView

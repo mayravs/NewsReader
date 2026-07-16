@@ -1,4 +1,4 @@
-package com.news.newsreader
+package com.news.newsreader.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi

@@ -6,8 +6,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.news.newsreader.ui.ArticleDetailsScreen
-import com.news.newsreader.ui.NewsListScreen
+import com.news.newsreader.ui.details.ArticleDetailsScreen
+import com.news.newsreader.ui.list.NewsListScreen
 
 fun NavGraphBuilder.appNavGraph(
     navController: NavController,

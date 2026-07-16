@@ -1,7 +1,6 @@
 package com.news.newsreader.di
 
 import com.news.newsreader.BuildConfig
-import com.news.newsreader.data.remote.NewsApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -57,9 +56,4 @@ object NetworkModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
-
-    @Provides
-    @Singleton
-    fun provideNewsApiService(retrofit: Retrofit): NewsApiService =
-        retrofit.create(NewsApiService::class.java)
 }

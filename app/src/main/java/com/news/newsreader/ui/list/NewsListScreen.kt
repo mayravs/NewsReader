@@ -1,7 +1,5 @@
 package com.news.newsreader.ui.list
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,15 +15,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,23 +36,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.news.newsreader.R
 import com.news.newsreader.domain.model.Article
 import com.news.newsreader.ui.DateTimeUtils
 
+/**
+ * The UI observes the StateFlow (uiState)
+ * When it changes, the UI recomposes automatically to display the new changes
+ */
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsListScreen(
     modifier: Modifier = Modifier,
     viewModel: NewsViewModel = hiltViewModel(),
     onArticleClick: (String) -> Unit,
+    onFavoritesClick: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    // collectAsStateWithLifecycle is preferred as it stops collecting when app is in background
 
     Scaffold(
         modifier = modifier,
@@ -58,7 +68,7 @@ fun NewsListScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Latest Headlines",
+                        text = stringResource(R.string.latest_headlines),
                         fontWeight = FontWeight.Medium
                     )
                 },
@@ -69,7 +79,19 @@ fun NewsListScreen(
                         modifier = Modifier.size(50.dp)
                     )
                 },
-                colors = TopAppBarColors(
+                actions = {
+                    IconButton(
+                        onClick = { onFavoritesClick() },
+                        content = {
+                            Icon(
+                                imageVector = Icons.Default.Bookmarks,
+                                tint = Color.White,
+                                contentDescription = "Favorites"
+                            )
+                        },
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF26456d),
                     scrolledContainerColor = Color(0xFF26456d),
                     navigationIconContentColor = Color.Unspecified,
@@ -97,12 +119,12 @@ fun NewsListScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "Error: $msg")
+                    Text(text = stringResource(R.string.error, msg))
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
                         onClick = { viewModel.refreshTopHeadlines() }
                     ) {
-                        Text(text = "Retry")
+                        Text(text = stringResource(R.string.retry))
                     }
                 }
             }
@@ -111,7 +133,7 @@ fun NewsListScreen(
                     modifier = modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
                     content = {
-                        Text(text = "No articles found")
+                        Text(text = stringResource(R.string.no_articles_found))
                     }
                 )
             }
@@ -127,8 +149,10 @@ fun NewsListScreen(
                         NewsRow(
                             article = article,
                             onClick = {
-                                article.url?.let { onArticleClick(it) }
-                            }
+                                onArticleClick(article.url)
+                            },
+                            onBookMarkClick = { viewModel.toggleFavorite(article) },
+                            isFavorite = article.isFavorite
                         )
                     }
                 }
@@ -137,12 +161,13 @@ fun NewsListScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsRow(
     modifier: Modifier = Modifier,
     article: Article,
     onClick: () -> Unit,
+    onBookMarkClick: () -> Unit,
+    isFavorite: Boolean,
 ) {
     Surface(
         modifier = modifier.padding(all = 4.dp),
@@ -163,7 +188,7 @@ fun NewsRow(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = article.title ?: "No title"
+                    text = article.title ?: stringResource(R.string.no_title)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -171,11 +196,21 @@ fun NewsRow(
                     maxLines = 1
                 )
             }
+
+            IconButton(
+                onClick = { onBookMarkClick() },
+                content = {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                        tint = if (isFavorite) Color.Blue else Color.Gray,
+                        contentDescription = "Bookmark button"
+                    )
+                }
+            )
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun NewsRowPreview() {
@@ -188,17 +223,20 @@ fun NewsRowPreview() {
             url = "https://gizmodo.com/bitcoin-mining-is-being-used-to-offset-heating-costs-in-greenhouses-and-homes-2000708684",
             imageUrl = "https://gizmodo.com/app/uploads/2026/01/btc-heat-1200x675.jpg",
             publishedAt = "2026-01-11T21:10:17Z",
-            content = "One of the side effects of the energy-intensive process of bitcoin mining is the excess heat that is created by the involved hardware devices. Miners have to prove that theyve expended energy on comp… [+4666 chars]"
+            content = "One of the side effects of the energy-intensive process of bitcoin mining is the excess heat that is created by the involved hardware devices. Miners have to prove that theyve expended energy on comp… [+4666 chars]",
+            isFavorite = true
         ),
-        onClick = {}
+        onClick = {},
+        onBookMarkClick = {},
+        isFavorite = true
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun NewsListScreenPreview() {
     NewsListScreen(
-        onArticleClick = {}
+        onArticleClick = {},
+        onFavoritesClick = {}
     )
 }

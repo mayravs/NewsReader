@@ -18,12 +18,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.news.newsreader.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticleDetailsScreen(
+    modifier: Modifier = Modifier,
+    viewModel: ArticleDetailsViewModel = hiltViewModel(),
+    onBackPressed: () -> Unit
+){
+    ArticleDetailsContent(
+        modifier = modifier,
+        url = viewModel.url,
+        onBackPressed = onBackPressed
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ArticleDetailsContent(
     modifier: Modifier = Modifier,
     url: String,
     onBackPressed: () -> Unit
@@ -32,7 +49,7 @@ fun ArticleDetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Article") },
+                title = { Text(text = stringResource(R.string.article)) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBackPressed,
@@ -86,8 +103,8 @@ fun ArticleDetailsScreen(
 @Preview
 @Composable
 fun ArticleDetailsScreenPreview(){
-    ArticleDetailsScreen(
-        url = "23123",
+    ArticleDetailsContent(
+        url = "https://www.google.com",
         onBackPressed = {}
     )
 }

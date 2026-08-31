@@ -6,21 +6,20 @@ import com.news.newsreader.domain.model.Article
 
 @Entity(tableName = "articles")
 data class ArticleEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey val url: String,
     val title: String?,
     val description: String?,
-    val url: String?,
     val publishedAt: String?,
     val content: String?,
     val imagePath: String?,
     val lastUpdatedAt: Long,
     val sourceName: String?,
-    val author: String?
+    val author: String?,
+    val isFavorite: Boolean = false
 )
 
 fun ArticleEntity.toArticleDomain(): Article {
     return Article(
-        id = id,
         sourceName = sourceName,
         author = author,
         title = title,
@@ -28,7 +27,8 @@ fun ArticleEntity.toArticleDomain(): Article {
         url = url,
         imageUrl = imagePath,
         publishedAt = publishedAt,
-        content = content
+        content = content,
+        isFavorite = isFavorite
     )
 }
 

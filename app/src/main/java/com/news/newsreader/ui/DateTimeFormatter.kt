@@ -1,26 +1,27 @@
 package com.news.newsreader.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 object DateTimeUtils {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun formatArticleDate(
-        isoDate: String,
-        zoneId: ZoneId = ZoneId.of("America/New_York")
+        isoDate: String
     ) : String {
-        val instant = Instant.parse(isoDate)
-
-        val formatter = DateTimeFormatter
-            .ofPattern("MMMM d, yyyy | h:mm a z")
-            .withLocale(Locale.US)
-            .withZone(zoneId)
-
-        return formatter.format(instant)
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).apply {
+                timeZone = TimeZone.getTimeZone("UTC")
+            }
+            val date = inputFormat.parse(isoDate) ?: return isoDate
+            
+            val outputFormat = SimpleDateFormat("MMMM d, yyyy | h:mm a", Locale.US).apply {
+                timeZone = TimeZone.getTimeZone("America/New_York")
+            }
+            outputFormat.format(date)
+        } catch (e: Exception) {
+            isoDate
+        }
     }
 }

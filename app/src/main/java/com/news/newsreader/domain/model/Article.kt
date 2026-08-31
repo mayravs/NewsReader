@@ -1,13 +1,13 @@
 package com.news.newsreader.domain.model
 
 data class Article(
-    val id: Int = 0,
     val sourceName: String?,
     val author: String?,
     val title: String?,
     val description: String?,
-    val url: String?,
+    val url: String,
     val imageUrl: String?,
     val publishedAt: String?,
-    val content: String?
+    val content: String?,
+    val isFavorite: Boolean
 )

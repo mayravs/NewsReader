@@ -1,11 +1,14 @@
 package com.news.newsreader.data.model
 
 import com.news.newsreader.data.local.ArticleEntity
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class NewsResponseDto(
     val articles: List<ArticleDto>
 )
 
+@JsonClass(generateAdapter = true)
 data class ArticleDto(
     val source: SourceDto?,
     val author: String?,
@@ -17,6 +20,7 @@ data class ArticleDto(
     val content: String?
 )
 
+@JsonClass(generateAdapter = true)
 data class SourceDto(
     val id: String?,
     val name: String?
@@ -27,7 +31,7 @@ fun NewsResponseDto.toEntityList(): List<ArticleEntity> {
         ArticleEntity(
             title = dto.title,
             description = dto.description,
-            url = dto.url,
+            url = dto.url ?: "",
             publishedAt = dto.publishedAt,
             content = dto.content,
             imagePath = dto.urlToImage,

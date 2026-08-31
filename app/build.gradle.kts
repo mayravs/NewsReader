@@ -2,10 +2,10 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -27,6 +27,9 @@ android {
         }
         val newsApiKey = localProps.getProperty("NEWSAPI_API_KEY") ?: "NEWSAPI_API_KEY"
         buildConfigField("String", "NEWSAPI_API_KEY", "\"$newsApiKey\"")
+
+        val newsApiBaseUrl = localProps.getProperty("NEWSAPI_BASE_URL") ?: "NEWSAPI_BASE_URL"
+        buildConfigField("String", "NEWSAPI_BASE_URL", "\"$newsApiBaseUrl\"")
     }
 
     buildTypes {
@@ -39,11 +42,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     buildFeatures {
         compose = true
@@ -61,6 +61,9 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.material)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
@@ -76,6 +79,8 @@ dependencies {
 
     // Hilt + Navigation Compose
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 
     // Retrofit
     implementation(libs.retrofit)

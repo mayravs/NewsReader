@@ -1,7 +1,13 @@
 package com.news.newsreader.ui.navigation
 
-sealed class Screen(val route: String) {
-    object List: Screen("List")
+import kotlinx.serialization.Serializable
 
-    object Details: Screen("Details/{url}")
+sealed interface Screen {
+
+    @Serializable
+    object List : Screen
+    @Serializable
+    data class Details(val url: String) : Screen
+    @Serializable
+    object Favorites : Screen
 }

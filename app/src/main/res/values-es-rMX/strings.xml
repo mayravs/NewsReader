@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NewsReader</string>
+    <string name="error">Error: %1$s</string>
+    <string name="retry">Reintentar</string>
+    <string name="no_title">Sin título</string>
+
+    <!--    News List Screen   -->
+    <string name="latest_headlines">Las últimas noticias</string>
+    <string name="no_articles_found">Noticias no encontradas</string>
+
+    <!--    Favorites Screen   -->
+    <string name="favorites">Favoritas</string>
+    <string name="no_favorites_yet">No hay favoritas todavía</string>
+
+    <!--    Details Screen     -->
+    <string name="article">Artículo Periodístico</string>
+</resources>

@@ -1,15 +1,20 @@
 package com.news.newsreader.domain
 
+import com.news.newsreader.data.Result
 import com.news.newsreader.domain.model.Article
 import kotlinx.coroutines.flow.Flow
 
 interface NewsRepo {
 
-    suspend fun getTopHeadlines(): Flow<List<Article>>
+    fun getTopHeadlines(): Flow<List<Article>>
 
-    suspend fun refreshTopHeadlines()
+    fun refreshTopHeadlines(): Flow<Result<Unit>>
 
-    suspend fun getEverything(): Flow<List<Article>>
+    fun getEverything(): Flow<List<Article>>
 
-    fun getArticleById(id: Int): Flow<Article>
+    fun getArticleByUrl(url: String): Flow<Article>
+
+    suspend fun toggleIsFavorite(url: String, isFavorite: Boolean)
+
+    fun getFavorites(): Flow<List<Article>>
 }
